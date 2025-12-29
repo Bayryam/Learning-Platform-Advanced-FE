@@ -4,6 +4,7 @@ export const adminService = {
   getActivityLog: () => api.get('/admin/activity-log'),
   getAllUsers: () => api.get('/admin/users/all'),  // Changed from /admin/users
   getStats: () => api.get('/home'),  // This has the stats
+  createUser: (userData) => api.post('/admin/register', userData),
 };
 
 export const authService = {
