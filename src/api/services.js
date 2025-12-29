@@ -1,0 +1,103 @@
+import api from './axiosConfig';
+
+export const adminService = {
+  getActivityLog: () => api.get('/admin/activity-log'),
+  getAllUsers: () => api.get('/admin/users/all'),  // Changed from /admin/users
+  getStats: () => api.get('/home'),  // This has the stats
+};
+
+export const authService = {
+  register: (userData) => api.post('/auth/register', userData),
+  getCurrentUser: () => api.get('/auth/me'),
+  login: (credentials) => api.post('/auth/login', credentials),
+};
+
+export const courseService = {
+  getAllCourses: () => api.get('/courses'),
+  getTop3Courses: () => api.get('/courses/top3'),
+  getCourseById: (id) => api.get(`/courses/${id}`),
+  createCourse: (formData) => api.post('/courses', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  createLesson: (courseId, lessonData) => api.post(`/courses/${courseId}/lessons`, lessonData),
+  getLesson: (courseId, lessonId) => api.get(`/courses/${courseId}/lessons/${lessonId}`),
+  markLessonComplete: (courseId, lessonId) => api.post(`/courses/${courseId}/lessons/${lessonId}/complete`),
+  startCourse: (id) => api.post(`/courses/${id}/start`),
+  getCoursesByCategory: (category) => api.get(`/courses/category/${category}`),
+};
+
+export const quizService = {
+  getQuizForCourse: (courseId) => api.get(`/quizzes/course/${courseId}`),
+  submitQuiz: (courseId, quizId, submission) => 
+    api.post(`/quizzes/submit?courseId=${courseId}&quizId=${quizId}`, submission),
+};
+
+export const homeService = {
+  getHomeData: () => api.get('/home'),
+  checkUserRole: () => api.get('/home/check-role'),
+};
+
+export const announcementService = {
+  getAllActiveAnnouncements: () => api.get('/announcements/strings'),
+  createAnnouncement: (data) => api.post('/announcements', data),
+  deleteAnnouncement: (id) => api.delete(`/announcements/${id}`),
+};
+
+export const newsService = {
+  getAllNews: () => api.get('/news'),
+  getNewsById: (id) => api.get(`/news/${id}`),
+  createNews: (data) => api.post('/news', data),
+  deleteNews: (id) => api.delete(`/news/${id}`),
+};
+
+export const ticketService = {
+  getUserTickets: () => api.get('/tickets'),
+  createTicket: (data) => api.post('/tickets', data),
+  resolveTicket: (ticketId) => api.post(`/tickets/${ticketId}/resolve`),
+};
+
+export const instructorService = {
+  getDashboardData: () => api.get('/instructor/dashboard'),
+  getMyCourses: () => api.get('/instructor/courses'),
+};
+
+export const groupService = {
+  getAllGroups: () => api.get('/groups'),
+  getGroupById: (id) => api.get(`/groups/${id}`),
+  createGroup: (data) => api.post('/groups', data),
+  joinGroup: (id) => api.post(`/groups/${id}/join`),
+  leaveGroup: (id) => api.post(`/groups/${id}/leave`),
+};
+
+export const faqService = {
+  getAllFAQs: () => api.get('/faq'),
+  createFAQ: (data) => api.post('/faq', data),
+  deleteFAQ: (id) => api.delete(`/faq/${id}`),
+};
+
+export const assignmentService = {
+  getAllAssignments: () => api.get('/assignments'),
+  getAssignmentById: (id) => api.get(`/assignments/${id}`),
+  createAssignment: (assignmentData) => api.post('/assignments', assignmentData),
+  uploadSolution: (formData) => api.post('/assignments/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+};
+
+export const eventService = {
+  getAllEvents: () => api.get('/events'),
+  getUpcomingEvents: () => api.get('/events/upcoming'),
+  getEventById: (id) => api.get(`/events/${id}`),
+  createEvent: (eventData) => api.post('/events', eventData),
+};
+
+export const userService = {
+  getProfile: () => api.get('/users/profile'),
+  getUserById: (id) => api.get(`/users/${id}`),
+  updateUser: (id, userData) => api.put(`/users/${id}`, userData),
+  searchUsers: (query, loggedInUsername) =>
+    api.get(`/users/search?query=${query}&loggedInUsername=${loggedInUsername}`),
+  getUserCertificates: (userId) => api.get(`/users/${userId}/certificates`),
+  updateUserRole: (userId, role) => api.patch(`/users/${userId}/role`, { role }),
+  deleteUser: (userId) => api.delete(`/users/${userId}`),
+};
