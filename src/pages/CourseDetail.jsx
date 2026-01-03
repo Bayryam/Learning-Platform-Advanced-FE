@@ -200,7 +200,17 @@ function CourseDetail() {
 
       {/* Assignments Section */}
       <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-        <h2 className="text-2xl font-bold mb-4">Assignments</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">Assignments</h2>
+          {isCreator && (
+            <button
+              onClick={() => navigate(`/assignments/create?courseId=${id}`)}
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+              + Add Assignment
+            </button>
+          )}
+        </div>
         {assignments.length > 0 ? (
           <div className="space-y-4">
             {assignments.map(assignment => (
@@ -213,17 +223,19 @@ function CourseDetail() {
                       Due: {new Date(assignment.dueDate).toLocaleString()}
                     </p>
                   </div>
-                  {userSolutionStatus[assignment.id] ? (
-                    <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
-                      Submitted ✓
-                    </span>
-                  ) : (
-                    <Link
-                      to={`/assignments/${assignment.id}`}
-                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                    >
-                      Submit
-                    </Link>
+                  {!isCreator && isCourseStarted && (
+                    userSolutionStatus[assignment.id] ? (
+                      <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                        Submitted ✓
+                      </span>
+                    ) : (
+                      <Link
+                        to={`/assignments/${assignment.id}`}
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                      >
+                        Submit
+                      </Link>
+                    )
                   )}
                 </div>
               </div>
