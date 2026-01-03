@@ -14,6 +14,9 @@ import CreateCourse from './pages/CreateCourse'
 import CreateLesson from './pages/CreateLesson'
 import LessonView from './pages/LessonView'
 import QuizTake from './pages/QuizTake'
+import CreateQuiz from './pages/CreateQuiz'
+import CreateQuestion from './pages/CreateQuestion'
+import Questions from './pages/Questions'
 import AdminDashboard from './pages/AdminDashboard'
 import CreateAssignment from './pages/CreateAssignment'
 import CreateEvent from './pages/CreateEvent'
@@ -74,6 +77,21 @@ function App() {
         <Route path="/courses/:courseId/quiz" element={
           <ProtectedRoute>
             <QuizTake />
+          </ProtectedRoute>
+        } />
+        <Route path="/courses/:courseId/quiz/create" element={
+          <ProtectedRoute>
+            <CreateQuiz />
+          </ProtectedRoute>
+        } />
+        <Route path="/courses/:courseId/questions/create" element={
+          <ProtectedRoute>
+            <CreateQuestion />
+          </ProtectedRoute>
+        } />
+        <Route path="/courses/:courseId/questions" element={
+          <ProtectedRoute>
+            <Questions />
           </ProtectedRoute>
         } />
         <Route path="/admin" element={

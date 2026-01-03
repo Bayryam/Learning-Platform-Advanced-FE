@@ -2,14 +2,18 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { courseService } from '../api/services'
 import { useAuth } from '../context/AuthContext'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function LessonView() {
   const { courseId, lessonId } = useParams()
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, checkAuth } = useAuth()
   const queryClient = useQueryClient()
   const [showRawContent, setShowRawContent] = useState(false)
+
+  useEffect(() => {
+    checkAuth()
+  }, [lessonId])
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['lesson', courseId, lessonId],
@@ -19,8 +23,7 @@ function LessonView() {
   const markCompleteMutation = useMutation({
     mutationFn: () => courseService.markLessonComplete(courseId, lessonId),
     onSuccess: () => {
-      queryClient.invalidateQueries(['lesson', courseId, lessonId])
-      queryClient.invalidateQueries(['course', courseId])
+      window.location.reload()
     },
   })
 
@@ -42,9 +45,7 @@ function LessonView() {
 
   const lesson = data?.data?.lesson
   const course = data?.data?.course
-  const completedLessons = data?.data?.completedLessons || []
-  const isCreator = data?.data?.isCreator || false
-  
+
   if (!lesson) {
     return (
       <div className="container mx-auto p-8">
@@ -53,7 +54,11 @@ function LessonView() {
     )
   }
 
-  const isCompleted = completedLessons.some(l => l.id === lesson.id)
+  const completedLessons = user?.completedLessons || []
+  const isCompleted = completedLessons.some(l => {
+    return l.id === parseInt(lessonId) || l === parseInt(lessonId)
+  })
+  const isStudent = user?.roles?.includes('ROLE_STUDENT') || user?.roles?.includes('STUDENT')
 
   return (
     <div className="container mx-auto p-8">
@@ -70,11 +75,6 @@ function LessonView() {
         <div className="flex justify-between items-start mb-6">
           <div>
             <h1 className="text-4xl font-bold mb-2">{lesson.title}</h1>
-            {isCompleted && (
-              <span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
-                ✓ Completed
-              </span>
-            )}
           </div>
           <div className="flex gap-2">
             <button
@@ -83,15 +83,6 @@ function LessonView() {
             >
               {showRawContent ? 'Show Formatted' : 'Show Raw'}
             </button>
-            {user && !isCompleted && !isCreator && (
-              <button
-                onClick={() => markCompleteMutation.mutate()}
-                disabled={markCompleteMutation.isPending}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
-              >
-                {markCompleteMutation.isPending ? 'Marking...' : 'Mark as Complete'}
-              </button>
-            )}
           </div>
         </div>
 
@@ -114,14 +105,20 @@ function LessonView() {
           >
             ← Back to Course
           </button>
-          {user && !isCompleted && !isCreator && (
-            <button
-              onClick={() => markCompleteMutation.mutate()}
-              disabled={markCompleteMutation.isPending}
-              className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
-            >
-              {markCompleteMutation.isPending ? 'Marking...' : 'Mark as Complete ✓'}
-            </button>
+          {isStudent && (
+            <div className="text-center">
+              {isCompleted ? (
+                <p className="text-green-600 font-semibold">Already Completed ✓</p>
+              ) : (
+                <button
+                  onClick={() => markCompleteMutation.mutate()}
+                  disabled={markCompleteMutation.isPending}
+                  className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
+                >
+                  {markCompleteMutation.isPending ? 'Marking...' : 'Mark as Completed'}
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>
