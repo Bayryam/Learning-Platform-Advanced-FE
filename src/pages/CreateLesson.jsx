@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { courseService } from '../api/services'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 
 function CreateLesson() {
   const navigate = useNavigate()
@@ -14,6 +15,7 @@ function CreateLesson() {
     content: '',
   })
   const [error, setError] = useState('')
+  const { showToast } = useToast()
 
   // Fetch course details to show course name
   const { data: course, isLoading: courseLoading } = useQuery({
@@ -24,10 +26,11 @@ function CreateLesson() {
   const createLessonMutation = useMutation({
     mutationFn: (data) => courseService.createLesson(courseId, data),
     onSuccess: () => {
+      showToast('Lesson created successfully!', 'success')
       navigate(`/courses/${courseId}`)
     },
     onError: (err) => {
-      setError(err.response?.data?.error || 'Failed to create lesson')
+      showToast(err.response?.data?.error || 'Failed to create lesson', 'error')
     },
   })
 

@@ -3,6 +3,7 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import { useParams, useNavigate } from 'react-router-dom'
 import { quizService } from '../api/services'
 import { useState, useEffect } from 'react'
+import { useToast } from '../context/ToastContext'
 
 function QuizTake() {
   const { courseId } = useParams()
@@ -10,6 +11,7 @@ function QuizTake() {
   const [answers, setAnswers] = useState({})
   const [startTime] = useState(() => Date.now())
   const [timeElapsed, setTimeElapsed] = useState(0)
+  const { showToast } = useToast()
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['quiz', courseId],
@@ -22,7 +24,7 @@ function QuizTake() {
       return quizService.submitQuiz(courseId, quizId, submission)
     },
     onSuccess: () => {
-      // Redirect to course detail page after submission
+      showToast('Quiz submitted successfully!', 'success')
       navigate(`/courses/${courseId}`)
     },
   })

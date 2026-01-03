@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { eventService, userService } from '../api/services'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 
 function CreateEvent() {
   const navigate = useNavigate()
@@ -16,6 +17,7 @@ function CreateEvent() {
     instructor: '',
   })
   const [error, setError] = useState('')
+  const { showToast } = useToast()
 
   const { data: instructors, isLoading: loadingInstructors } = useQuery({
     queryKey: ['instructors'],
@@ -46,10 +48,11 @@ function CreateEvent() {
       return eventService.createEvent(payload)
     },
     onSuccess: () => {
+      showToast('Event created successfully!', 'success')
       navigate('/events')
     },
     onError: (err) => {
-      setError(err.response?.data?.error || 'Failed to create event')
+      showToast(err.response?.data?.error || 'Failed to create event', 'error')
     },
   })
 

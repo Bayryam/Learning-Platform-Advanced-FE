@@ -4,6 +4,7 @@ import { groupService } from '../api/services'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 
 function GroupDetail() {
   const { id } = useParams()
@@ -11,6 +12,7 @@ function GroupDetail() {
   const queryClient = useQueryClient()
   const { user } = useAuth()
   const [articleContent, setArticleContent] = useState('')
+  const { showToast } = useToast()
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['group', id],
@@ -20,6 +22,7 @@ function GroupDetail() {
   const leaveMutation = useMutation({
     mutationFn: () => groupService.leaveGroup(id),
     onSuccess: () => {
+      showToast('You have left the group.', 'success')
       navigate('/groups')
     },
   })
@@ -27,6 +30,7 @@ function GroupDetail() {
   const joinMutation = useMutation({
     mutationFn: () => groupService.joinGroup(id),
     onSuccess: () => {
+      showToast('You have joined the group!', 'success')
       queryClient.invalidateQueries(['group', id])
     },
   })
@@ -34,21 +38,23 @@ function GroupDetail() {
   const deleteMutation = useMutation({
     mutationFn: () => groupService.deleteGroup(id),
     onSuccess: () => {
+      showToast('Group deleted successfully!', 'success')
       navigate('/groups')
     },
     onError: (error) => {
-      alert('Failed to delete group: ' + (error.response?.data?.message || error.message))
+      showToast('Failed to delete group: ' + (error.response?.data?.message || error.message), 'error')
     },
   })
 
   const createArticleMutation = useMutation({
     mutationFn: (content) => groupService.createArticle(id, { content }),
     onSuccess: () => {
+      showToast('Article created successfully!', 'success')
       queryClient.invalidateQueries(['group', id])
       setArticleContent('')
     },
     onError: (error) => {
-      alert('Failed to create article: ' + (error.response?.data?.message || error.message))
+      showToast('Failed to create article: ' + (error.response?.data?.message || error.message), 'error')
     },
   })
 

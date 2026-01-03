@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { ticketService } from '../api/services'
+import { useToast } from '../context/ToastContext'
 
 function CreateTicket() {
   const navigate = useNavigate()
@@ -14,14 +15,16 @@ function CreateTicket() {
     description: '',
   })
   const [error, setError] = useState('')
+  const { showToast } = useToast()
 
   const createMutation = useMutation({
     mutationFn: (data) => ticketService.createTicket(courseId, data),
     onSuccess: () => {
+      showToast('Ticket created successfully!', 'success')
       navigate('/tickets')
     },
     onError: (err) => {
-      setError(err.response?.data?.error || 'Failed to create ticket')
+      showToast(err.response?.data?.error || 'Failed to create ticket', 'error')
     },
   })
 

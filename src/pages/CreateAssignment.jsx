@@ -3,11 +3,13 @@ import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { assignmentService, courseService } from '../api/services'
+import { useToast } from '../context/ToastContext'
 
 function CreateAssignment() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const courseIdParam = searchParams.get('courseId')
+  const { showToast } = useToast()
   
   const [formData, setFormData] = useState({
     title: '',
@@ -32,10 +34,11 @@ function CreateAssignment() {
       return assignmentService.createAssignment(payload)
     },
     onSuccess: () => {
+      showToast('Assignment created successfully!', 'success')
       navigate('/assignments')
     },
     onError: (err) => {
-      setError(err.response?.data?.error || 'Failed to create assignment')
+      showToast('Failed to create assignment: ' + (err.response?.data?.error || err.message), 'error')
     },
   })
 

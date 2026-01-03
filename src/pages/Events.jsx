@@ -3,12 +3,14 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { eventService } from '../api/services'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 
 function Events() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const queryClient = useQueryClient()
   const [filterView, setFilterView] = useState('all')
+  const { showToast } = useToast()
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['events'],
@@ -18,6 +20,7 @@ function Events() {
   const deleteMutation = useMutation({
     mutationFn: (eventId) => eventService.deleteEvent(eventId),
     onSuccess: () => {
+      showToast('Event deleted successfully!', 'success')
       queryClient.invalidateQueries(['events'])
     },
   })

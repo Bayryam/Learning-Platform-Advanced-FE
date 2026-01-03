@@ -33,9 +33,11 @@ import Certificates from './pages/Certificates'
 import ActivityLog from './pages/ActivityLog'
 import UserManagement from './pages/UserManagement'
 import CreateGroup from "./pages/CreateGroup.jsx";
+import { ToastProvider } from './context/ToastContext'
 
 function App() {
   return (
+    <ToastProvider>
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <Routes>
@@ -165,6 +167,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
+    </ToastProvider>
   )
 }
 

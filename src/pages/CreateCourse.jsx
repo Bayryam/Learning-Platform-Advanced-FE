@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { courseService } from '../api/services'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 
 function CreateCourse() {
   const navigate = useNavigate()
@@ -16,6 +17,7 @@ function CreateCourse() {
   })
   const [categoryInput, setCategoryInput] = useState('')
   const [error, setError] = useState('')
+  const { showToast } = useToast()
 
   const createCourseMutation = useMutation({
     mutationFn: (data) => {
@@ -31,10 +33,11 @@ function CreateCourse() {
       return courseService.createCourse(formData)
     },
     onSuccess: (response) => {
+      showToast('Course created successfully!', 'success')
       navigate('/courses')
     },
     onError: (err) => {
-      setError(err.response?.data?.error || 'Failed to create course')
+      showToast(err.response?.data?.error || 'Failed to create course', 'error')
     },
   })
 

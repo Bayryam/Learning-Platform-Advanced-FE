@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { announcementService } from '../api/services'
+import { useToast } from '../context/ToastContext'
 
 function CreateAnnouncement() {
   const navigate = useNavigate()
+  const { showToast } = useToast()
 
   // 1. Добавяме state за липсващите полета
   const [formData, setFormData] = useState({
@@ -18,10 +20,11 @@ function CreateAnnouncement() {
   const createMutation = useMutation({
     mutationFn: (data) => announcementService.createAnnouncement(data),
     onSuccess: () => {
+      showToast('Announcement created successfully!', 'success')
       navigate('/admin')
     },
     onError: (err) => {
-      setError(err.response?.data?.error || 'Failed to create announcement')
+      showToast(err.response?.data?.error || 'Failed to create announcement', 'error')
     },
   })
 

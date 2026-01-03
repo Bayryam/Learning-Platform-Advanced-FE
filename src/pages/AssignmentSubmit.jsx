@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams, useNavigate } from 'react-router-dom'
 import { assignmentService } from '../api/services'
 import { useState } from 'react'
+import { useToast } from '../context/ToastContext'
 
 function AssignmentSubmit() {
   const { id } = useParams()
@@ -11,6 +12,7 @@ function AssignmentSubmit() {
   const [selectedFile, setSelectedFile] = useState(null)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const { showToast } = useToast()
 
   const { data, isLoading } = useQuery({
     queryKey: ['assignment', id],
@@ -20,14 +22,14 @@ function AssignmentSubmit() {
   const uploadMutation = useMutation({
     mutationFn: (formData) => assignmentService.uploadSolution(formData),
     onSuccess: () => {
-      setSuccess('Solution uploaded successfully!')
+      showToast('Solution uploaded successfully!', 'success')
       setSelectedFile(null)
       queryClient.invalidateQueries(['assignment', id])
       queryClient.invalidateQueries(['assignments'])
       setTimeout(() => navigate('/assignments'), 2000)
     },
     onError: (err) => {
-      setError(err.response?.data?.error || 'Failed to upload solution')
+      showToast(err.response?.data?.error || 'Failed to upload solution', 'error')
     },
   })
 

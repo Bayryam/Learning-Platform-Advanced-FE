@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ function Register() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const { register } = useAuth()
+  const { showToast } = useToast()
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -26,13 +28,16 @@ function Register() {
 
     try {
       await register(formData)
+      showToast('Registration successful! Please log in.', 'success') // ADD
       navigate('/login')
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed. Please try again.')
+      const errorMsg = err.response?.data?.error || 'Registration failed. Please try again.'
+      showToast(errorMsg, 'error')
+      setError(errorMsg)
     } finally {
-      setLoading(false)
+        setLoading(false)
+      }
     }
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12">

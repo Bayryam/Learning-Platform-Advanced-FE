@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 
 function Login() {
   const [credentials, setCredentials] = useState({ username: '', password: '' })
@@ -8,22 +9,21 @@ function Login() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const { login } = useAuth()
+  const { showToast } = useToast()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError('')
     setLoading(true)
 
     try {
       const result = await login(credentials)
       if (result.success) {
-        // Wait a bit more for the auth context to update
-        setTimeout(() => {
-          navigate('/')
-        }, 500)
+        showToast('Login successful!', 'success') // ADD
+        setTimeout(() => navigate('/'), 500)
       }
     } catch (err) {
-      setError(err.message || 'Login failed. Please check your credentials.')
+      showToast(err.message || 'Login failed', 'error') // ADD
+      setError(err.message || 'Login failed')
     } finally {
       setLoading(false)
     }

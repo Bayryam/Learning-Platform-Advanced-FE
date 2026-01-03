@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { courseService } from '../api/services'
 import { useAuth } from '../context/AuthContext'
 import { useState, useEffect } from 'react'
+import { useToast } from '../context/ToastContext'
 
 function LessonView() {
   const { courseId, lessonId } = useParams()
@@ -10,6 +11,7 @@ function LessonView() {
   const { user, checkAuth } = useAuth()
   const queryClient = useQueryClient()
   const [showRawContent, setShowRawContent] = useState(false)
+  const { showToast } = useToast()
 
   useEffect(() => {
     checkAuth()
@@ -23,8 +25,12 @@ function LessonView() {
   const markCompleteMutation = useMutation({
     mutationFn: () => courseService.markLessonComplete(courseId, lessonId),
     onSuccess: () => {
-      window.location.reload()
+      showToast('Lesson marked as complete!', 'success')
+      queryClient.invalidateQueries()
     },
+    onError: () => {
+      showToast('Failed to mark lesson as complete', 'error')
+    }
   })
 
   if (isLoading) {

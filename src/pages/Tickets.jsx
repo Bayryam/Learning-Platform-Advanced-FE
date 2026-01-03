@@ -2,10 +2,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ticketService } from '../api/services'
 import { useNavigate } from 'react-router-dom'
+import { useToast } from '../context/ToastContext'
 
 function Tickets() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['tickets'],
@@ -15,6 +17,7 @@ function Tickets() {
   const resolveMutation = useMutation({
     mutationFn: (ticketId) => ticketService.resolveTicket(ticketId),
     onSuccess: () => {
+      showToast('Ticket marked as resolved!', 'success')
       queryClient.invalidateQueries(['tickets'])
     },
   })

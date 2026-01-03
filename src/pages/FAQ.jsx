@@ -1,15 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { faqService } from '../api/services'
-import { useState } from 'react'
+import { use, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
-import Toast from '../components/Toast'
+import { useToast } from '../context/ToastContext'
 
 function FAQ() {
   const [openIndex, setOpenIndex] = useState(null)
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
-  const [toast, setToast] = useState({ show: false, message: '', type: 'success' })
+  const { showToast } = useToast()
 
   const { user } = useAuth()
   const queryClient = useQueryClient()
@@ -27,10 +27,10 @@ function FAQ() {
       setQuestion('')
       setAnswer('')
       setShowCreateForm(false)
-      setToast({ show: true, message: 'FAQ created successfully!', type: 'success' })
+      showToast('FAQ created successfully!', 'success')
     },
     onError: (error) => {
-      setToast({ show: true, message: error.response?.data?.message || 'Failed to create FAQ', type: 'error' })
+      showToast(error.response?.data?.message || 'Failed to create FAQ', 'error')
     },
   })
 
@@ -38,10 +38,10 @@ function FAQ() {
     mutationFn: faqService.deleteFAQ,
     onSuccess: () => {
       queryClient.invalidateQueries(['faq'])
-      setToast({ show: true, message: 'FAQ deleted successfully!', type: 'success' })
+      showToast('FAQ deleted successfully!', 'success')
     },
     onError: (error) => {
-      setToast({ show: true, message: error.response?.data?.message || 'Failed to delete FAQ', type: 'error' })
+      showToast(error.response?.data?.message || 'Failed to delete FAQ', 'error')
     },
   })
 

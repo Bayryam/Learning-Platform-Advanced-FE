@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { quizService } from '../api/services'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 
 function CreateQuiz() {
   const navigate = useNavigate()
@@ -13,14 +14,16 @@ function CreateQuiz() {
     numberOfQuestions: '',
   })
   const [error, setError] = useState('')
+  const { showToast } = useToast()
 
   const createQuizMutation = useMutation({
     mutationFn: (data) => quizService.createQuiz(data),
     onSuccess: () => {
+      showToast('Quiz created successfully!', 'success')
       navigate(`/courses/${courseId}`)
     },
     onError: (err) => {
-      setError(err.response?.data?.error || 'Failed to create quiz')
+      showToast(err.response?.data?.error || 'Failed to create quiz', 'error')
     },
   })
 

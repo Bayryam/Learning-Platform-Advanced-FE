@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { newsService } from '../api/services'
+import { useToast } from '../context/ToastContext'
 
 function CreateNews() {
   const navigate = useNavigate()
@@ -11,14 +12,16 @@ function CreateNews() {
     content: '',
   })
   const [error, setError] = useState('')
+  const { showToast } = useToast()
 
   const createMutation = useMutation({
     mutationFn: (data) => newsService.createNews(data),
     onSuccess: () => {
+      showToast('News article created successfully!', 'success')
       navigate('/news')
     },
     onError: (err) => {
-      setError(err.response?.data?.error || 'Failed to create news')
+      showToast(err.response?.data?.error || 'Failed to create news article', 'error')
     },
   })
 

@@ -3,11 +3,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { groupService } from '../api/services'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 
 function Groups() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['groups'],
@@ -17,21 +19,23 @@ function Groups() {
   const joinMutation = useMutation({
     mutationFn: (groupId) => groupService.joinGroup(groupId),
     onSuccess: (data, groupId) => {
+      showToast('Successfully joined the group!', 'success')
       queryClient.invalidateQueries(['groups'])
       navigate(`/groups/${groupId}`)
     },
     onError: (error) => {
-      alert('Failed to join group: ' + (error.response?.data?.message || error.message))
+      showToast('Failed to join group: ' + (error.response?.data?.message || error.message), 'error')
     },
   })
 
   const deleteMutation = useMutation({
     mutationFn: (groupId) => groupService.deleteGroup(groupId),
     onSuccess: () => {
+      showToast('Group deleted successfully!', 'success')
       queryClient.invalidateQueries(['groups'])
     },
     onError: (error) => {
-      alert('Failed to delete group: ' + (error.response?.data?.message || error.message))
+      showToast('Failed to delete group: ' + (error.response?.data?.message || error.message), 'error')
     },
   })
 

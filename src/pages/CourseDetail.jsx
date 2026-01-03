@@ -2,24 +2,30 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { courseService } from '../api/services'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 
 function CourseDetail() {
   const { id } = useParams()
   const { user } = useAuth()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['course', id],
     queryFn: () => courseService.getCourseById(id),
   })
 
-  const startCourseMutation = useMutation({
-    mutationFn: () => courseService.startCourse(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['course', id])
-    },
-  })
+const startCourseMutation = useMutation({
+  mutationFn: () => courseService.startCourse(id),
+  onSuccess: () => {
+    showToast('Course started!', 'success')
+    queryClient.invalidateQueries(['course', id])
+  },
+  onError: (err) => {
+    showToast('Failed to start course', 'error')
+  }
+})  
 
   if (isLoading) {
     return (

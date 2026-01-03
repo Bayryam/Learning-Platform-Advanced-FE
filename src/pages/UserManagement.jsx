@@ -1,12 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminService, userService } from '../api/services'
 import { useState } from 'react'
+import { useToast } from '../context/ToastContext'
 
 function UserManagement() {
   const queryClient = useQueryClient()
 
   // --- STATE ---
   const [editingUser, setEditingUser] = useState(null)
+  const { showToast } = useToast()
 
   // Create User Modal State
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -20,11 +22,6 @@ function UserManagement() {
 
   // Global Notification State
   const [notification, setNotification] = useState(null)
-
-  const showNotification = (message, type = 'success') => {
-    setNotification({ message, type })
-    setTimeout(() => setNotification(null), 3000)
-  }
 
   // Fetch Users
   const { data: response, isLoading } = useQuery({
@@ -48,11 +45,11 @@ function UserManagement() {
     onSuccess: () => {
       queryClient.invalidateQueries(['allUsers'])
       setUserToDelete(null) // Close the delete modal
-      showNotification('User deleted successfully', 'success')
+      showToast('User deleted successfully', 'success')
     },
     onError: (err) => {
       setUserToDelete(null) // Close modal on error too (optional)
-      showNotification(err.message || 'Failed to delete user', 'error')
+      showToast(err.message || 'Failed to delete user', 'error')
     }
   })
 
@@ -61,9 +58,9 @@ function UserManagement() {
     onSuccess: () => {
       queryClient.invalidateQueries(['allUsers'])
       setEditingUser(null)
-      showNotification('Role updated successfully', 'success')
+      showToast('Role updated successfully', 'success')
     },
-    onError: (err) => showNotification(err.message || 'Failed to update role', 'error')
+    onError: (err) => showToast(err.message || 'Failed to update role', 'error')
   })
 
   const createUserMutation = useMutation({
@@ -73,7 +70,7 @@ function UserManagement() {
       setIsModalOpen(false)
       setNewUser({ username: '', password: '', firstName: '', lastName: '', email: '', role: 'STUDENT' })
       setModalError(null)
-      showNotification('User created successfully', 'success')
+      showToast('User created successfully', 'success')
     },
     onError: (error) => {
       let errorMessage = 'Failed to create user.';
@@ -90,6 +87,7 @@ function UserManagement() {
         }
       }
       setModalError(errorMessage);
+      showToast(errorMessage, 'error')
     }
   })
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { groupService, userService } from '../api/services'
 import { useAuth } from '../context/AuthContext'
-import Toast from '../components/Toast'
+import { useToast } from '../context/ToastContext'
 
 
 function CreateGroups() {
@@ -17,7 +17,7 @@ function CreateGroups() {
   })
   const [members, setMembers] = useState([])
   const [error, setError] = useState('')
-  const [toast, setToast] = useState(null)
+  const { showToast } = useToast()
 
   const createGroupMutation = useMutation({
     mutationFn: async (data) => {
@@ -35,7 +35,7 @@ function CreateGroups() {
       return groupService.createGroup(formData)
     },
     onSuccess: () => {
-      setToast({ message: 'Group created successfully!', type: 'success' })
+      showToast('Group created successfully!', 'success')
       setTimeout(() => navigate('/groups'), 1500)
     },
     onError: (err) => {
@@ -57,7 +57,7 @@ function CreateGroups() {
       }
 
       setError(errorMsg)
-      setToast({ message: errorMsg, type: 'error' })
+      showToast(errorMsg, 'error')
     },
   })
 

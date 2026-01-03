@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { questionService } from '../api/services'
 import { useAuth } from '../context/AuthContext'
 import { useState } from 'react'
+import { useToast } from '../context/ToastContext'
 
 function Questions() {
   const { courseId } = useParams()
@@ -10,6 +11,7 @@ function Questions() {
   const { user } = useAuth()
   const queryClient = useQueryClient()
   const [error, setError] = useState('')
+  const { showToast } = useToast()
 
   const { data, isLoading } = useQuery({
     queryKey: ['questions', courseId],
@@ -19,10 +21,11 @@ function Questions() {
   const deleteQuestionMutation = useMutation({
     mutationFn: (questionId) => questionService.deleteQuestion(questionId),
     onSuccess: () => {
+      showToast('Question deleted successfully!', 'success')
       queryClient.invalidateQueries(['questions', courseId])
     },
     onError: (err) => {
-      setError(err.response?.data?.error || 'Failed to delete question')
+      showToast(err.response?.data?.error || 'Failed to delete question', 'error')
     },
   })
 
