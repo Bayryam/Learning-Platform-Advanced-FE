@@ -148,61 +148,97 @@ const startCourseMutation = useMutation({
             )}
           </div>
 
-          {/* Quiz Section */}
-          <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Final Quiz</h2>
-          {user && isCourseStarted && !isCreator && isCourseCompleted && hasQuiz && !hasCompletedQuiz && (
-            <button
-              onClick={() => navigate(`/courses/${id}/quiz`)}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              Start Quiz
-            </button>
-          )}
-          {isCreator && (
-            <button
-              onClick={() => navigate(`/courses/${id}/quiz/create`)}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            >
-              Create Quiz
-            </button>
-          )}
-        </div>
+{/* Quiz Section */}
+<div className="bg-white rounded-lg shadow-md p-8 mb-6">
+  <div className="flex justify-between items-center mb-4">
+    <h2 className="text-2xl font-bold">Final Quiz</h2>
+    
+    {/* For Students */}
+    {user && isCourseStarted && !isCreator && isCourseCompleted && hasQuiz && !hasCompletedQuiz && (
+      <button
+        onClick={() => navigate(`/courses/${id}/quiz`)}
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        Start Quiz
+      </button>
+    )}
+    
+  {/* For Instructors/Admins */}
+{isCreator && (
+  <div className="flex gap-2">
+    {hasQuiz ? (
+      <>
+        <button
+          onClick={() => navigate(`/courses/${id}/quiz`)}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          View Quiz
+        </button>
+        <button
+  onClick={() => {
+navigate(`/courses/${id}/quiz/${data?.data?.quizId}/edit`)
+  }}
+  className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+>
+  Edit Quiz
+</button>
+      </>
+    ) : (
+      <button
+        onClick={() => navigate(`/courses/${id}/quiz/create`)}
+        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+      >
+        Create Quiz
+      </button>
+    )}
+  </div>
+)}
+  </div>
 
-        {user && isCourseStarted && !isCreator && !isCourseCompleted && (
-          <p className="text-gray-500 mb-4">Complete all lessons to unlock the quiz.</p>
-        )}
+  {/* Student Messages */}
+  {user && isCourseStarted && !isCreator && !isCourseCompleted && (
+    <p className="text-gray-500 mb-4">Complete all lessons to unlock the quiz.</p>
+  )}
 
-        {user && isCourseStarted && !isCreator && isCourseCompleted && !hasQuiz && (
-          <p className="text-gray-500 mb-4">No quiz available for this course.</p>
-        )}
+  {user && isCourseStarted && !isCreator && isCourseCompleted && !hasQuiz && (
+    <p className="text-gray-500 mb-4">No quiz available for this course.</p>
+  )}
 
-        {user && isCourseStarted && !isCreator && isCourseCompleted && hasQuiz && hasCompletedQuiz && (
-          <p className="text-green-600 font-semibold mb-4">✓ Quiz Completed! Check the leaderboard below to see your score.</p>
-        )}
+  {user && isCourseStarted && !isCreator && isCourseCompleted && hasQuiz && hasCompletedQuiz && (
+    <p className="text-green-600 font-semibold mb-4">✓ Quiz Completed! Check the leaderboard below to see your score.</p>
+  )}
 
-        {!user && (
-          <p className="text-gray-500">Start the course to access the quiz.</p>
-        )}
+  {/* Instructor/Admin Messages */}
+  {isCreator && hasQuiz && (
+    <p className="text-blue-600 mb-4">✓ Quiz has been created for this course.</p>
+  )}
 
-        {isCreator && (
-          <div className="flex gap-4 mt-4">
-            <button
-              onClick={() => navigate(`/courses/${id}/questions/create`)}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            >
-              Add Question
-            </button>
-            <button
-              onClick={() => navigate(`/courses/${id}/questions`)}
-              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-            >
-              Delete Question
-            </button>
-          </div>
-        )}
-      </div>
+  {isCreator && !hasQuiz && (
+    <p className="text-gray-500 mb-4">No quiz created yet. Create a quiz to test your students.</p>
+  )}
+
+  {!user && (
+    <p className="text-gray-500">Start the course to access the quiz.</p>
+  )}
+
+  {/* Question Management for Instructors/Admins */}
+  {isCreator && (
+    <div className="flex gap-4 mt-4">
+      <button
+        onClick={() => navigate(`/courses/${id}/questions/create`)}
+        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+      >
+        Add Question
+      </button>
+      <button
+        onClick={() => navigate(`/courses/${id}/questions`)}
+        className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+      >
+        Manage Questions
+      </button>
+    </div>
+  )}
+</div>
 
       {/* Assignments Section */}
       <div className="bg-white rounded-lg shadow-md p-8 mb-6">

@@ -19,7 +19,7 @@ function Questions() {
   })
 
   const deleteQuestionMutation = useMutation({
-    mutationFn: (questionId) => questionService.deleteQuestion(questionId),
+    mutationFn: (questionId) => questionService.deleteQuestion(courseId, questionId),
     onSuccess: () => {
       showToast('Question deleted successfully!', 'success')
       queryClient.invalidateQueries(['questions', courseId])

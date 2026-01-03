@@ -15,8 +15,8 @@ function CreateQuestion() {
     option2: '',
     option3: '',
     option4: '',
-    correctAnswer: '',
-    difficulty: '',
+    correctAnswer: '1', // Default to option 1
+    difficulty: 'Medium',
   })
   const [error, setError] = useState('')
   const { showToast } = useToast()
@@ -46,15 +46,8 @@ function CreateQuestion() {
       return
     }
 
-    if (!formData.correctAnswer.trim()) {
-      setError('Please enter the correct answer')
-      return
-    }
-
-    if (!formData.difficulty.trim()) {
-      setError('Please enter the difficulty level')
-      return
-    }
+    // Get the actual correct answer text based on selected option
+    const correctAnswerText = formData[`option${formData.correctAnswer}`]
 
     createQuestionMutation.mutate({
       courseId: parseInt(courseId),
@@ -63,7 +56,7 @@ function CreateQuestion() {
       option2: formData.option2,
       option3: formData.option3,
       option4: formData.option4,
-      correctAnswer: formData.correctAnswer,
+      correctAnswer: correctAnswerText,
       difficulty: formData.difficulty,
     })
   }
@@ -73,6 +66,13 @@ function CreateQuestion() {
     setFormData({
       ...formData,
       [name]: value,
+    })
+  }
+
+  const handleCorrectAnswerChange = (optionNumber) => {
+    setFormData({
+      ...formData,
+      correctAnswer: optionNumber,
     })
   }
 
@@ -98,114 +98,142 @@ function CreateQuestion() {
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-8">
           <div className="mb-6">
             <label htmlFor="questionTitle" className="block text-gray-700 font-semibold mb-2">
-              Title:
+              Question:
             </label>
-            <input
+            <textarea
               id="questionTitle"
-              type="text"
               name="questionTitle"
               value={formData.questionTitle}
               onChange={handleChange}
               required
+              rows="3"
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter question title"
+              placeholder="Enter your question"
             />
           </div>
 
-          <div className="mb-6">
-            <label htmlFor="option1" className="block text-gray-700 font-semibold mb-2">
-              Option 1:
+          <div className="mb-6 space-y-4">
+            <label className="block text-gray-700 font-semibold mb-2">
+              Options (select the correct answer):
             </label>
-            <input
-              id="option1"
-              type="text"
-              name="option1"
-              value={formData.option1}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter option 1"
-            />
-          </div>
 
-          <div className="mb-6">
-            <label htmlFor="option2" className="block text-gray-700 font-semibold mb-2">
-              Option 2:
-            </label>
-            <input
-              id="option2"
-              type="text"
-              name="option2"
-              value={formData.option2}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter option 2"
-            />
-          </div>
+            {/* Option 1 */}
+            <div className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50">
+              <input
+                type="radio"
+                id="correct1"
+                name="correctAnswer"
+                checked={formData.correctAnswer === '1'}
+                onChange={() => handleCorrectAnswerChange('1')}
+                className="w-5 h-5 text-green-600 focus:ring-green-500"
+              />
+              <label htmlFor="option1" className="flex-1">
+                <span className="font-semibold text-gray-600 mr-2">A.</span>
+                <input
+                  id="option1"
+                  type="text"
+                  name="option1"
+                  value={formData.option1}
+                  onChange={handleChange}
+                  required
+                  className="flex-1 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-full mt-1"
+                  placeholder="Enter option A"
+                />
+              </label>
+            </div>
 
-          <div className="mb-6">
-            <label htmlFor="option3" className="block text-gray-700 font-semibold mb-2">
-              Option 3:
-            </label>
-            <input
-              id="option3"
-              type="text"
-              name="option3"
-              value={formData.option3}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter option 3"
-            />
-          </div>
+            {/* Option 2 */}
+            <div className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50">
+              <input
+                type="radio"
+                id="correct2"
+                name="correctAnswer"
+                checked={formData.correctAnswer === '2'}
+                onChange={() => handleCorrectAnswerChange('2')}
+                className="w-5 h-5 text-green-600 focus:ring-green-500"
+              />
+              <label htmlFor="option2" className="flex-1">
+                <span className="font-semibold text-gray-600 mr-2">B.</span>
+                <input
+                  id="option2"
+                  type="text"
+                  name="option2"
+                  value={formData.option2}
+                  onChange={handleChange}
+                  required
+                  className="flex-1 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-full mt-1"
+                  placeholder="Enter option B"
+                />
+              </label>
+            </div>
 
-          <div className="mb-6">
-            <label htmlFor="option4" className="block text-gray-700 font-semibold mb-2">
-              Option 4:
-            </label>
-            <input
-              id="option4"
-              type="text"
-              name="option4"
-              value={formData.option4}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter option 4"
-            />
-          </div>
+            {/* Option 3 */}
+            <div className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50">
+              <input
+                type="radio"
+                id="correct3"
+                name="correctAnswer"
+                checked={formData.correctAnswer === '3'}
+                onChange={() => handleCorrectAnswerChange('3')}
+                className="w-5 h-5 text-green-600 focus:ring-green-500"
+              />
+              <label htmlFor="option3" className="flex-1">
+                <span className="font-semibold text-gray-600 mr-2">C.</span>
+                <input
+                  id="option3"
+                  type="text"
+                  name="option3"
+                  value={formData.option3}
+                  onChange={handleChange}
+                  required
+                  className="flex-1 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-full mt-1"
+                  placeholder="Enter option C"
+                />
+              </label>
+            </div>
 
-          <div className="mb-6">
-            <label htmlFor="correctAnswer" className="block text-gray-700 font-semibold mb-2">
-              Correct Answer:
-            </label>
-            <input
-              id="correctAnswer"
-              type="text"
-              name="correctAnswer"
-              value={formData.correctAnswer}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter the correct answer"
-            />
+            {/* Option 4 */}
+            <div className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50">
+              <input
+                type="radio"
+                id="correct4"
+                name="correctAnswer"
+                checked={formData.correctAnswer === '4'}
+                onChange={() => handleCorrectAnswerChange('4')}
+                className="w-5 h-5 text-green-600 focus:ring-green-500"
+              />
+              <label htmlFor="option4" className="flex-1">
+                <span className="font-semibold text-gray-600 mr-2">D.</span>
+                <input
+                  id="option4"
+                  type="text"
+                  name="option4"
+                  value={formData.option4}
+                  onChange={handleChange}
+                  required
+                  className="flex-1 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-full mt-1"
+                  placeholder="Enter option D"
+                />
+              </label>
+            </div>
           </div>
 
           <div className="mb-6">
             <label htmlFor="difficulty" className="block text-gray-700 font-semibold mb-2">
               Difficulty:
             </label>
-            <input
+            <select
               id="difficulty"
-              type="text"
               name="difficulty"
               value={formData.difficulty}
               onChange={handleChange}
               required
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter difficulty level (e.g., Easy, Medium, Hard)"
-            />
+            >
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
           </div>
 
           <div className="flex gap-4">
@@ -231,4 +259,3 @@ function CreateQuestion() {
 }
 
 export default CreateQuestion
-

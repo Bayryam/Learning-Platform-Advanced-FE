@@ -29,12 +29,20 @@ export const courseService = {
 
 export const quizService = {
   getQuizForCourse: (courseId) => api.get(`/quizzes/course/${courseId}`),
+  getQuizDetails: (quizId) => api.get(`/quizzes/${quizId}/details`), // NEW
   submitQuiz: (courseId, quizId, submission) => 
     api.post(`/quizzes/submit?courseId=${courseId}&quizId=${quizId}`, submission),
   createQuiz: (quizData) =>
     api.post(`/quizzes/create?courseId=${quizData.courseId}`, {
       title: quizData.title,
-      numberOfQuestions: quizData.numberOfQuestions
+      numberOfQuestions: quizData.numberOfQuestions,
+      selectedQuestionIds: quizData.selectedQuestionIds || []
+    }),
+  updateQuiz: (quizId, courseId, quizData) => // NEW
+    api.put(`/quizzes/${quizId}?courseId=${courseId}`, {
+      title: quizData.title,
+      numberOfQuestions: quizData.numberOfQuestions,
+      selectedQuestionIds: quizData.selectedQuestionIds || []
     }),
 };
 
@@ -49,8 +57,8 @@ export const questionService = {
       correctAnswer: questionData.correctAnswer,
       difficulty: questionData.difficulty,
     }),
-  getQuestions: (courseId) => api.get(`/questions?courseId=${courseId}`),
-  deleteQuestion: (questionId) => api.delete(`/questions/${questionId}`),
+  getQuestions: (courseId) => api.get(`/questions/course/${courseId}`),
+  deleteQuestion: (courseId, questionId) => api.delete(`/questions/${questionId}?courseId=${courseId}`),
 };
 
 export const homeService = {

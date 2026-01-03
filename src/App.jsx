@@ -33,6 +33,7 @@ import Certificates from './pages/Certificates'
 import ActivityLog from './pages/ActivityLog'
 import UserManagement from './pages/UserManagement'
 import CreateGroup from "./pages/CreateGroup.jsx";
+import EditQuiz from './pages/EditQuiz'
 import { ToastProvider } from './context/ToastContext'
 
 function App() {
@@ -56,6 +57,12 @@ function App() {
     <GroupDetail />
   </ProtectedRoute>
 } />
+
+<Route path="/courses/:courseId/quiz/:quizId/edit" element={
+  <ProtectedRoute>
+    <EditQuiz />
+  </ProtectedRoute>
+  } />
 
         {/* Protected Routes */}
         <Route path="/assignments" element={
