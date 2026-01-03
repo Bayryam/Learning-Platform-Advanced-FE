@@ -21,6 +21,7 @@ import News from './pages/News'
 import CreateNews from './pages/CreateNews'
 import FAQ from './pages/FAQ'
 import Groups from './pages/Groups'
+import GroupDetail from './pages/GroupDetail'
 import Tickets from './pages/Tickets'
 import CreateTicket from './pages/CreateTicket'
 import InstructorDashboard from './pages/InstructorDashboard'
@@ -28,6 +29,7 @@ import CreateAnnouncement from './pages/CreateAnnouncement'
 import Certificates from './pages/Certificates'
 import ActivityLog from './pages/ActivityLog'
 import UserManagement from './pages/UserManagement'
+import CreateGroup from "./pages/CreateGroup.jsx";
 
 function App() {
   return (
@@ -44,6 +46,11 @@ function App() {
         <Route path="/news" element={<News />} />
 <Route path="/faq" element={<FAQ />} />
 <Route path="/groups" element={<Groups />} />
+<Route path="/groups/:id" element={
+  <ProtectedRoute>
+    <GroupDetail />
+  </ProtectedRoute>
+} />
 
         {/* Protected Routes */}
         <Route path="/assignments" element={
@@ -66,6 +73,11 @@ function App() {
             <CreateCourse />
           </ProtectedRoute>
         } />
+          <Route path="/groups/create" element={
+            <ProtectedRoute>
+                <CreateGroup />
+            </ProtectedRoute>
+          } />
         <Route path="/courses/:courseId/lessons/create" element={
           <ProtectedRoute>
             <CreateLesson />
