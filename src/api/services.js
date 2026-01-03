@@ -83,11 +83,36 @@ export const instructorService = {
 };
 
 export const groupService = {
-  getAllGroups: () => api.get('/groups'),
-  getGroupById: (id) => api.get(`/groups/${id}`),
-  createGroup: (data) => api.post('/groups', data),
-  joinGroup: (id) => api.post(`/groups/${id}/join`),
-  leaveGroup: (id) => api.post(`/groups/${id}/leave`),
+  getAllGroups: async () => {
+    const response = await api.get('/groups');
+    return response.data;
+  },
+  getGroupById: async (id) => {
+    const response = await api.get(`/groups/${id}`);
+    return response.data;
+  },
+  createGroup: async (formData) => {
+    const response = await api.post('/groups', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data;
+  },
+  joinGroup: async (id) => {
+    const response = await api.post(`/groups/${id}/join`);
+    return response.data;
+  },
+  leaveGroup: async (id) => {
+    const response = await api.post(`/groups/${id}/leave`);
+    return response.data;
+  },
+  deleteGroup: async (id) => {
+    const response = await api.delete(`/groups/${id}`);
+    return response.data;
+  },
+  createArticle: async (groupId, articleData) => {
+    const response = await api.post(`/groups/${groupId}/articles`, articleData);
+    return response.data;
+  },
 };
 
 export const faqService = {
