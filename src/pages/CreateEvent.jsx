@@ -1,8 +1,8 @@
 // src/pages/CreateEvent.jsx
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
-import { eventService } from '../api/services'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { eventService, userService } from '../api/services'
 import { useAuth } from '../context/AuthContext'
 
 function CreateEvent() {
@@ -13,9 +13,28 @@ function CreateEvent() {
     description: '',
     startTime: '',
     endTime: '',
-    instructor: user?.username || '',
+    instructor: '',
   })
   const [error, setError] = useState('')
+
+  const { data: instructors, isLoading: loadingInstructors } = useQuery({
+    queryKey: ['instructors'],
+    queryFn: async () => {
+      const response = await userService.getInstructors()
+      return response.data
+    },
+  })
+
+  useEffect(() => {
+    if (user && instructors && instructors.length > 0 && !formData.instructor) {
+      const currentUserIsInstructor = instructors.some(
+        instructor => instructor.username === user.username
+      )
+      if (currentUserIsInstructor) {
+        setFormData(prev => ({ ...prev, instructor: user.username }))
+      }
+    }
+  }, [user, instructors, formData.instructor])
 
   const createMutation = useMutation({
     mutationFn: (data) => {
@@ -59,8 +78,9 @@ function CreateEvent() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block font-semibold mb-2">Event Title</label>
+            <label htmlFor="title" className="block font-semibold mb-2">Event Title</label>
             <input
+              id="title"
               type="text"
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={formData.title}
@@ -71,8 +91,9 @@ function CreateEvent() {
           </div>
 
           <div className="mb-4">
-            <label className="block font-semibold mb-2">Description</label>
+            <label htmlFor="description" className="block font-semibold mb-2">Description</label>
             <textarea
+              id="description"
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows="4"
               value={formData.description}
@@ -83,20 +104,28 @@ function CreateEvent() {
           </div>
 
           <div className="mb-4">
-            <label className="block font-semibold mb-2">Instructor</label>
-            <input
-              type="text"
+            <label htmlFor="instructor" className="block font-semibold mb-2">Instructor</label>
+            <select
+              id="instructor"
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={formData.instructor}
               onChange={(e) => setFormData({...formData, instructor: e.target.value})}
-              placeholder="Instructor name"
               required
-            />
+              disabled={loadingInstructors}
+            >
+              <option value="">Select an instructor</option>
+              {instructors?.map((instructor) => (
+                <option key={instructor.id} value={instructor.username}>
+                  {instructor.firstName} {instructor.lastName} (@{instructor.username})
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="mb-4">
-            <label className="block font-semibold mb-2">Start Time</label>
+            <label htmlFor="startTime" className="block font-semibold mb-2">Start Time</label>
             <input
+              id="startTime"
               type="datetime-local"
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={formData.startTime}
@@ -106,8 +135,9 @@ function CreateEvent() {
           </div>
 
           <div className="mb-6">
-            <label className="block font-semibold mb-2">End Time</label>
+            <label htmlFor="endTime" className="block font-semibold mb-2">End Time</label>
             <input
+              id="endTime"
               type="datetime-local"
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={formData.endTime}

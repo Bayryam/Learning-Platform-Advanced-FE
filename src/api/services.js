@@ -144,6 +144,7 @@ export const eventService = {
   getUpcomingEvents: () => api.get('/events/upcoming'),
   getEventById: (id) => api.get(`/events/${id}`),
   createEvent: (eventData) => api.post('/events', eventData),
+  deleteEvent: (id) => api.delete(`/events/${id}`),
 };
 
 export const userService = {
@@ -155,4 +156,5 @@ export const userService = {
   getUserCertificates: (userId) => api.get(`/users/${userId}/certificates`),
   updateUserRole: (userId, role) => api.patch(`/users/${userId}/role`, { role }),
   deleteUser: (userId) => api.delete(`/users/${userId}`),
+  getInstructors: () => api.get('/users/instructors'),
 };
