@@ -8,10 +8,8 @@ function QuizTake() {
   const { courseId } = useParams()
   const navigate = useNavigate()
   const [answers, setAnswers] = useState({})
-  const [startTime] = useState(Date.now())
+  const [startTime] = useState(() => Date.now())
   const [timeElapsed, setTimeElapsed] = useState(0)
-  const [showResult, setShowResult] = useState(false)
-  const [score, setScore] = useState(null)
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['quiz', courseId],
@@ -23,9 +21,9 @@ function QuizTake() {
       const quizId = data?.data?.quizId
       return quizService.submitQuiz(courseId, quizId, submission)
     },
-    onSuccess: (response) => {
-      setScore(response.data)
-      setShowResult(true)
+    onSuccess: () => {
+      // Redirect to course detail page after submission
+      navigate(`/courses/${courseId}`)
     },
   })
 
@@ -95,39 +93,6 @@ function QuizTake() {
           >
             Back to Course
           </button>
-        </div>
-      </div>
-    )
-  }
-
-  if (showResult) {
-    return (
-      <div className="container mx-auto p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Quiz Complete!</h1>
-            <div className="bg-blue-50 p-8 rounded-lg mb-6">
-              <div className="text-6xl font-bold text-blue-600 mb-2">{score}</div>
-              <div className="text-xl text-gray-600">out of {questions.length}</div>
-              <div className="text-lg text-gray-500 mt-4">
-                Time: {formatTime(timeElapsed)}
-              </div>
-            </div>
-            <div className="flex gap-4 justify-center">
-              <button
-                onClick={() => navigate(`/courses/${courseId}`)}
-                className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
-              >
-                Back to Course
-              </button>
-              <button
-                onClick={() => navigate('/courses')}
-                className="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400"
-              >
-                All Courses
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     )

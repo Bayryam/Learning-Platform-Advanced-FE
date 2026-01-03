@@ -31,6 +31,26 @@ export const quizService = {
   getQuizForCourse: (courseId) => api.get(`/quizzes/course/${courseId}`),
   submitQuiz: (courseId, quizId, submission) => 
     api.post(`/quizzes/submit?courseId=${courseId}&quizId=${quizId}`, submission),
+  createQuiz: (quizData) =>
+    api.post(`/quizzes/create?courseId=${quizData.courseId}`, {
+      title: quizData.title,
+      numberOfQuestions: quizData.numberOfQuestions
+    }),
+};
+
+export const questionService = {
+  createQuestion: (questionData) =>
+    api.post(`/questions?courseId=${questionData.courseId}`, {
+      questionTitle: questionData.questionTitle,
+      option1: questionData.option1,
+      option2: questionData.option2,
+      option3: questionData.option3,
+      option4: questionData.option4,
+      correctAnswer: questionData.correctAnswer,
+      difficulty: questionData.difficulty,
+    }),
+  getQuestions: (courseId) => api.get(`/questions?courseId=${courseId}`),
+  deleteQuestion: (questionId) => api.delete(`/questions/${questionId}`),
 };
 
 export const homeService = {

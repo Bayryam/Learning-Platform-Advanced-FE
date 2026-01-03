@@ -43,6 +43,7 @@ export function AuthProvider({ children }) {
         setUser(response.data)
         return { success: true }
       }
+      throw new Error('Invalid login response')
     } catch (error) {
       throw new Error(error.response?.data?.error || 'Invalid credentials')
     }
@@ -64,7 +65,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, register, loading, checkAuth }}>
       {children}
     </AuthContext.Provider>
   )
