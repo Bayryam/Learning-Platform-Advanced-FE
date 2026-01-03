@@ -122,7 +122,16 @@ export const faqService = {
 };
 
 export const assignmentService = {
-  getAllAssignments: () => api.get('/assignments'),
+  getAllAssignments: async () => {
+    const response = await api.get('/assignments');
+    console.log('=== Assignment Service Response ===');
+    console.log('Response:', response);
+    console.log('Response.data:', response.data);
+    console.log('Response.data type:', typeof response.data);
+    console.log('Response.data.assignments:', response.data?.assignments);
+    console.log('===================================');
+    return response;
+  },
   getAssignmentById: (id) => api.get(`/assignments/${id}`),
   createAssignment: (assignmentData) => api.post('/assignments', assignmentData),
   uploadSolution: (formData) => api.post('/assignments/upload', formData, {
