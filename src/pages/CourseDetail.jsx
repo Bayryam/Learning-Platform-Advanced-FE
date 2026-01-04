@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { courseService } from '../api/services'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
+import notificationService from '../services/notificationService'
 
 function CourseDetail() {
   const { id } = useParams()
@@ -21,6 +22,10 @@ const startCourseMutation = useMutation({
   onSuccess: () => {
     showToast('Course started!', 'success')
     queryClient.invalidateQueries(['course', id])
+
+    if (user?.id && id) {
+      notificationService.joinCourse(user.id, parseInt(id))
+    }
   },
   onError: (err) => {
     showToast('Failed to start course', 'error')
