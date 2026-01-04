@@ -1,16 +1,67 @@
 import { useQuery } from '@tanstack/react-query'
 import { assignmentService } from '../api/services'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useEffect, useRef } from 'react'
 
 function Assignments() {
   const navigate = useNavigate()
   const { user } = useAuth()
-  
+  const [searchParams, setSearchParams] = useSearchParams()
+  const highlightId = searchParams.get('highlight')
+  const assignmentRefs = useRef({})
+
   const { data, isLoading, error } = useQuery({
     queryKey: ['assignments'],
     queryFn: assignmentService.getAllAssignments,
   })
+
+  const assignments = data?.data?.assignments || []
+  const userSolutionStatus = data?.data?.userSolutionStatus || {}
+  const isInstructor = user?.roles?.includes('ROLE_INSTRUCTOR') || user?.roles?.includes('ROLE_ADMIN')
+
+  useEffect(() => {
+    if (highlightId && assignmentRefs.current[highlightId] && !isLoading) {
+      setTimeout(() => {
+        assignmentRefs.current[highlightId]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        })
+
+        setTimeout(() => {
+          setSearchParams({})
+        }, 3000) // Keep highlight for 3 seconds
+      }, 100)
+    }
+  }, [highlightId, isLoading, setSearchParams])
+
+  const formatDueDate = (dueDate) => {
+    if (!dueDate) return 'No due date'
+
+    try {
+      let date
+
+      if (Array.isArray(dueDate)) {
+        const [year, month, day, hour, minute] = dueDate
+        date = new Date(year, month - 1, day, hour || 0, minute || 0)
+      } else {
+        date = new Date(dueDate)
+      }
+
+      if (Number.isNaN(date.getTime())) return 'Invalid date'
+
+      return date.toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    } catch (error) {
+      console.error('Error formatting due date:', error)
+      return 'Invalid date'
+    }
+  }
 
   if (isLoading) {
     return (
@@ -28,9 +79,6 @@ function Assignments() {
     )
   }
 
-  const assignments = data?.data?.assignments || []
-  const userSolutionStatus = data?.data?.userSolutionStatus || {}
-  const isInstructor = user?.roles?.includes('ROLE_INSTRUCTOR') || user?.roles?.includes('ROLE_ADMIN')
 
   return (
     <div className="container mx-auto p-8">
@@ -56,11 +104,11 @@ function Assignments() {
             <div key={assignment.id} className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow">
               <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <h3 className="text-xl font-semibold mb-2">{assignment.title}</h3>
-                  <p className="text-gray-600 mb-4">{assignment.description}</p>
-                  <div className="text-sm text-gray-500">
-                    <p><strong>Due Date:</strong> {new Date(assignment.dueDate).toLocaleString()}</p>
-                  </div>
+                    <h3 className="text-xl font-semibold mb-2">{assignment.title}</h3>
+                    <p className="text-gray-600 mb-4">{assignment.description}</p>
+                    <div className="text-sm text-gray-500">
+                      <p><strong>Due Date:</strong> {formatDueDate(assignment.dueDate)}</p>
+                    </div>
                 </div>
                 <div className="ml-4">
                   {userSolutionStatus[assignment.id] ? (

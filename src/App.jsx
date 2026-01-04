@@ -35,13 +35,15 @@ import UserManagement from './pages/UserManagement'
 import CreateGroup from "./pages/CreateGroup.jsx";
 import EditQuiz from './pages/EditQuiz'
 import { ToastProvider } from './context/ToastContext'
+import { NotificationProvider } from './context/NotificationContext'
 
 function App() {
   return (
     <ToastProvider>
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <Routes>
+      <NotificationProvider>
+        <div className="min-h-screen bg-gray-50">
+          <Navbar />
+          <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -174,6 +176,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
+      </NotificationProvider>
     </ToastProvider>
   )
 }

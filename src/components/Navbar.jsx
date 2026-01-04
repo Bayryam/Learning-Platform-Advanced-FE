@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import NotificationBell from './NotificationBell'
 
 function Navbar() {
   const { user, logout, loading } = useAuth()
@@ -14,7 +15,6 @@ function Navbar() {
     return null
   }
 
-  // Check if user is admin (you can adjust this logic based on your user roles)
   const isAdmin = user?.roles?.includes('ROLE_ADMIN') || user?.username === 'admin'
 
   return (
@@ -40,6 +40,7 @@ function Navbar() {
           <div className="flex items-center space-x-4">
             {user ? (
               <>
+                <NotificationBell />
                 <span className="text-sm">Welcome, {user.firstName || user.username}</span>
                 <button
                   onClick={handleLogout}

@@ -167,4 +167,5 @@ export const userService = {
   updateUserRole: (userId, role) => api.patch(`/users/${userId}/role`, { role }),
   deleteUser: (userId) => api.delete(`/users/${userId}`),
   getInstructors: () => api.get('/users/instructors'),
+  getEnrolledCourses: (userId) => api.get(`/users/${userId}/enrolled-courses`),
 };

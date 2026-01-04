@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { authService } from '../api/services'
+import { authService, userService } from '../api/services'
 import api from '../api/axiosConfig'
+import notificationService from '../services/notificationService'
 
 const AuthContext = createContext(null)
 
@@ -17,10 +18,18 @@ export function AuthProvider({ children }) {
       const response = await authService.getCurrentUser()
       if (response.data && response.data.authenticated !== false) {
         setUser(response.data)
+
+        try {
+          const enrolledCoursesResponse = await userService.getEnrolledCourses(response.data.id)
+          const enrolledCourseIds = enrolledCoursesResponse.data || []
+          notificationService.connect(response.data.id, enrolledCourseIds)
+        } catch (error) {
+          console.error('Failed to connect to notification service:', error)
+        }
       } else {
         setUser(null)
       }
-    } catch (error) {
+    } catch {
       setUser(null)
     } finally {
       setLoading(false)
@@ -41,6 +50,15 @@ export function AuthProvider({ children }) {
 
       if (response.status === 200 && response.data.id) {
         setUser(response.data)
+
+        try {
+          const enrolledCoursesResponse = await userService.getEnrolledCourses(response.data.id)
+          const enrolledCourseIds = enrolledCoursesResponse.data || []
+          notificationService.connect(response.data.id, enrolledCourseIds)
+        } catch (error) {
+          console.error('Failed to connect to notification service:', error)
+        }
+
         return { success: true }
       }
       throw new Error('Invalid login response')
@@ -55,6 +73,7 @@ export function AuthProvider({ children }) {
     } catch (error) {
       console.error('Logout error:', error)
     } finally {
+      notificationService.disconnect()
       setUser(null)
     }
   }
