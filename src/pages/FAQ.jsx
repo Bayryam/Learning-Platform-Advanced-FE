@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { faqService } from '../api/services'
-import { use, useState } from 'react'
+import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 
@@ -86,12 +86,6 @@ function FAQ() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-8">
-      <Toast
-        show={toast.show}
-        message={toast.message}
-        type={toast.type}
-        onClose={() => setToast({ ...toast, show: false })}
-      />
 
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
