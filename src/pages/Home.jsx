@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
-import { assignmentService, courseService, eventService } from '../api/services'
+import { assignmentService, courseService, eventService, newsService } from '../api/services'
 import AnnouncementBanner from '../components/AnnouncementBanner'
 import { Link } from 'react-router-dom'
 
@@ -9,6 +9,14 @@ function Home() {
     queryKey: ['assignments'],
     queryFn: assignmentService.getAllAssignments,
   })
+
+  const { data: externalNewsData, isLoading: newsLoading } = useQuery({
+    queryKey: ['externalNews'],
+    queryFn: () => newsService.getExternalNews(6),
+    staleTime: 1000 * 60 * 30,
+  })
+
+  const externalNews = externalNewsData?.articles || []
 
   const { data: coursesData, isLoading: coursesLoading } = useQuery({
     queryKey: ['courses'],
@@ -68,7 +76,7 @@ function Home() {
       .slice(0, 3)
   }, [eventsData])
 
-  if (assignmentsLoading || coursesLoading || eventsLoading) return <div className="p-8">Loading...</div>
+  if (assignmentsLoading || coursesLoading || eventsLoading || newsLoading) return <div className="p-8">Loading...</div>
 
   return (
     <div>
@@ -76,6 +84,44 @@ function Home() {
       
       <div className="container mx-auto p-8">
         <h1 className="text-4xl font-bold mb-8">Welcome to Learning Platform</h1>
+
+{externalNews.length > 0 && (
+          <div className="bg-white p-6 rounded-lg shadow mb-6">
+            <h2 className="text-2xl font-semibold mb-4">📰 Educational News</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {externalNews.map((article, index) => (
+                <a
+                  key={index}
+                  href={article.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="border rounded-lg hover:shadow-md transition-shadow overflow-hidden flex flex-col"
+                >
+                  {article.urlToImage && (
+                    <img
+                      src={article.urlToImage}
+                      alt={article.title}
+                      className="w-full h-48 object-cover"
+                      onError={(e) => { e.target.style.display = 'none' }}
+                    />
+                  )}
+                  <div className="p-4 flex-1 flex flex-col">
+                    <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">
+                      {article.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-3 flex-1">
+                      {article.description}
+                    </p>
+                    <div className="flex justify-between items-center text-xs text-gray-500 mt-auto">
+                      <span>{article.source?.name}</span>
+                      <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-lg shadow">

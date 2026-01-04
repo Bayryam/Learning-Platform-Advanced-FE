@@ -77,6 +77,8 @@ export const newsService = {
   getNewsById: (id) => api.get(`/news/${id}`),
   createNews: (data) => api.post('/news', data),
   deleteNews: (id) => api.delete(`/news/${id}`),
+  getExternalNews: (pageSize = 6) => 
+  api.get(`/news/external?pageSize=${pageSize}`).then(res => res.data),
 };
 
 export const ticketService = {
