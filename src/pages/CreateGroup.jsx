@@ -5,7 +5,6 @@ import { groupService, userService } from '../api/services'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 
-
 function CreateGroups() {
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -147,13 +146,6 @@ function CreateGroups() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8 px-4">
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
 
       <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8 border-2 border-gray-200">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Create Group</h1>
