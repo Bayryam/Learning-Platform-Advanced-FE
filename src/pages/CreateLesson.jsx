@@ -17,7 +17,7 @@ function CreateLesson() {
   const [error, setError] = useState('')
   const { showToast } = useToast()
 
-  // Fetch course details to show course name
+
   const { data: course, isLoading: courseLoading } = useQuery({
     queryKey: ['course', courseId],
     queryFn: () => courseService.getCourseById(courseId),

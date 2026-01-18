@@ -2,8 +2,8 @@ import api from './axiosConfig';
 
 export const adminService = {
   getActivityLog: () => api.get('/admin/activity-log'),
-  getAllUsers: () => api.get('/admin/users/all'),  // Changed from /admin/users
-  getStats: () => api.get('/home'),  // This has the stats
+  getAllUsers: () => api.get('/admin/users/all'),
+  getStats: () => api.get('/home'),
   createUser: (userData) => api.post('/admin/register', userData),
 };
 
@@ -29,7 +29,7 @@ export const courseService = {
 
 export const quizService = {
   getQuizForCourse: (courseId) => api.get(`/quizzes/course/${courseId}`),
-  getQuizDetails: (quizId) => api.get(`/quizzes/${quizId}/details`), // NEW
+  getQuizDetails: (quizId) => api.get(`/quizzes/${quizId}/details`),
   submitQuiz: (courseId, quizId, submission) => 
     api.post(`/quizzes/submit?courseId=${courseId}&quizId=${quizId}`, submission),
   createQuiz: (quizData) =>
@@ -38,7 +38,7 @@ export const quizService = {
       numberOfQuestions: quizData.numberOfQuestions,
       selectedQuestionIds: quizData.selectedQuestionIds || []
     }),
-  updateQuiz: (quizId, courseId, quizData) => // NEW
+  updateQuiz: (quizId, courseId, quizData) =>
     api.put(`/quizzes/${quizId}?courseId=${courseId}`, {
       title: quizData.title,
       numberOfQuestions: quizData.numberOfQuestions,

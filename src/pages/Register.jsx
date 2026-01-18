@@ -28,7 +28,7 @@ function Register() {
 
     try {
       await register(formData)
-      showToast('Registration successful! Please log in.', 'success') // ADD
+      showToast('Registration successful! Please log in.', 'success')
       navigate('/login')
     } catch (err) {
       const errorMsg = err.response?.data?.error || 'Registration failed. Please try again.'

@@ -8,10 +8,10 @@ function CreateAnnouncement() {
   const navigate = useNavigate()
   const { showToast } = useToast()
 
-  // 1. Добавяме state за липсващите полета
+
   const [formData, setFormData] = useState({
     title: '',
-    content: '', // Беше 'message'
+    content: '',
     expiresAt: ''
   })
 
@@ -28,7 +28,7 @@ function CreateAnnouncement() {
     },
   })
 
-  // Общ handler за input промени
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({
@@ -41,8 +41,8 @@ function CreateAnnouncement() {
     e.preventDefault()
     setError('')
 
-    // Spring очаква LocalDateTime (ISO format).
-    // input type="datetime-local" връща 'YYYY-MM-DDTHH:mm', което е валидно.
+
+
     createMutation.mutate(formData)
   }
 

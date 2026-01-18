@@ -18,11 +18,11 @@ function Login() {
     try {
       const result = await login(credentials)
       if (result.success) {
-        showToast('Login successful!', 'success') // ADD
+        showToast('Login successful!', 'success')
         setTimeout(() => navigate('/'), 500)
       }
     } catch (err) {
-      showToast(err.message || 'Login failed', 'error') // ADD
+      showToast(err.message || 'Login failed', 'error')
       setError(err.message || 'Login failed')
     } finally {
       setLoading(false)

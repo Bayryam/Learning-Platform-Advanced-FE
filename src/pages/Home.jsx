@@ -35,10 +35,10 @@ function Home() {
     return allAssignments
       .filter(assignment => new Date(assignment.dueDate) > new Date())
       .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
-      .slice(0, 3) // Get top 3
+      .slice(0, 3)
   }, [allAssignments])
 
-  // Get all courses and deduplicate
+
   const allCourses = useMemo(() => {
     const coursesByCategory = coursesData?.data || {}
     const uniqueCoursesMap = new Map()
@@ -66,7 +66,7 @@ function Home() {
       .slice(0, 3)
   }, [allCourses])
 
-  // Get all events and filter/sort to get top 3 most upcoming
+
   const upcomingEvents = useMemo(() => {
     const events = Array.isArray(eventsData?.data) ? eventsData.data : []
     const now = new Date()

@@ -10,7 +10,7 @@ function AnnouncementBanner() {
   const { data } = useQuery({
     queryKey: ['announcements'],
     queryFn: announcementService.getAllActiveAnnouncements,
-    refetchInterval: 60000, // Refetch every minute
+    refetchInterval: 60000,
   })
 
   const announcements = data?.data || []
@@ -19,7 +19,7 @@ function AnnouncementBanner() {
     if (announcements.length > 1) {
       const timer = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % announcements.length)
-      }, 5000) // Change announcement every 5 seconds
+      }, 5000)
 
       return () => clearInterval(timer)
     }

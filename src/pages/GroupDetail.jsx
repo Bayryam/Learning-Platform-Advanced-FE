@@ -77,13 +77,13 @@ function GroupDetail() {
   const group = data?.group || data
   const articles = (data?.articles || group?.articles || [])
     .sort((a, b) => {
-      // Sort by creation date, newest first
+
       const dateA = new Date(a.createdAt || 0)
       const dateB = new Date(b.createdAt || 0)
       return dateB - dateA
     })
 
-  // Check if current user is a member of the group
+
   const isMember = group?.members?.some(member => member.username === user?.username) || false
 
   const isAdmin = user?.roles?.some(role => {

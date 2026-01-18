@@ -30,7 +30,7 @@ function Assignments() {
 
         setTimeout(() => {
           setSearchParams({})
-        }, 3000) // Keep highlight for 3 seconds
+        }, 3000)
       }, 100)
     }
   }, [highlightId, isLoading, setSearchParams])

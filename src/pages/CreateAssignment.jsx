@@ -54,7 +54,7 @@ function CreateAssignment() {
     createMutation.mutate(formData)
   }
 
-  // Get all courses from all categories and deduplicate by ID
+
   const allCourses = coursesData?.data
     ? Array.from(
         new Map(

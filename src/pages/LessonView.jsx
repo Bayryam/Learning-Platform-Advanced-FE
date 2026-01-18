@@ -21,7 +21,7 @@ function LessonView() {
     const markCompleteMutation = useMutation({
         mutationFn: () => courseService.markLessonComplete(courseId, lessonId),
         onSuccess: () => {
-            // Optimistically update lesson cache
+
             queryClient.setQueryData(['lesson', courseId, lessonId], (oldData) => {
                 if (!oldData) return oldData
 

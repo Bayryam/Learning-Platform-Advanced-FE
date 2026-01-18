@@ -171,7 +171,7 @@ function NotificationBell() {
               </div>
             ) : (
               notifications.map((notification) => {
-                // Debug log to see notification structure
+
                 if (notification.data?.dueDate) {
                   console.log('Due date raw:', notification.data.dueDate, 'Type:', typeof notification.data.dueDate);
                 }

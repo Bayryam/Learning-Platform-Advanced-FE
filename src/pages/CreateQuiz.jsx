@@ -16,7 +16,7 @@ function CreateQuiz() {
   const [error, setError] = useState('')
   const { showToast } = useToast()
 
-  // Fetch available questions for this course
+
   const { data: questionsData, isLoading: loadingQuestions } = useQuery({
     queryKey: ['questions', courseId],
     queryFn: () => questionService.getQuestions(courseId),

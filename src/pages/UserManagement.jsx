@@ -6,30 +6,30 @@ import { useToast } from '../context/ToastContext'
 function UserManagement() {
   const queryClient = useQueryClient()
 
-  // --- STATE ---
+
   const [editingUser, setEditingUser] = useState(null)
   const { showToast } = useToast()
 
-  // Create User Modal State
+
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [newUser, setNewUser] = useState({
     username: '', password: '', firstName: '', lastName: '', email: '', role: 'STUDENT'
   })
   const [modalError, setModalError] = useState(null)
 
-  // Delete Confirmation State (Stores the user object to be deleted)
+
   const [userToDelete, setUserToDelete] = useState(null)
 
-  // Global Notification State
+
   const [notification, setNotification] = useState(null)
 
-  // Fetch Users
+
   const { data: response, isLoading } = useQuery({
     queryKey: ['allUsers'],
     queryFn: adminService.getAllUsers,
   })
 
-  // Safe Data Parsing
+
   let userList = [];
   if (response?.data) {
     if (Array.isArray(response.data)) userList = response.data;
@@ -38,17 +38,17 @@ function UserManagement() {
     } else if (response.data.content) userList = response.data.content;
   }
 
-  // --- MUTATIONS ---
+
 
   const deleteUserMutation = useMutation({
     mutationFn: userService.deleteUser,
     onSuccess: () => {
       queryClient.invalidateQueries(['allUsers'])
-      setUserToDelete(null) // Close the delete modal
+      setUserToDelete(null)
       showToast('User deleted successfully', 'success')
     },
     onError: (err) => {
-      setUserToDelete(null) // Close modal on error too (optional)
+      setUserToDelete(null)
       showToast(err.message || 'Failed to delete user', 'error')
     }
   })
@@ -91,7 +91,7 @@ function UserManagement() {
     }
   })
 
-  // Handlers
+
   const openCreateModal = () => {
     setModalError(null);
     setIsModalOpen(true);
@@ -111,12 +111,12 @@ function UserManagement() {
     createUserMutation.mutate(payload)
   }
 
-  // Triggered when "Delete" button in the table is clicked
+
   const initiateDelete = (user) => {
     setUserToDelete(user);
   }
 
-  // Triggered when "Confirm" is clicked inside the modal
+
   const confirmDelete = () => {
     if (userToDelete) {
       deleteUserMutation.mutate(userToDelete.id);

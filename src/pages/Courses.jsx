@@ -34,7 +34,7 @@ function Courses() {
 
   const coursesByCategory = data?.data || {}
 
-  // Get unique courses (deduplicate courses that appear in multiple categories)
+
   const uniqueCoursesMap = new Map()
   Object.entries(coursesByCategory).forEach(([category, courses]) => {
     courses.forEach(course => {

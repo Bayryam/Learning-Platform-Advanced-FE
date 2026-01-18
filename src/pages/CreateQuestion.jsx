@@ -15,7 +15,7 @@ function CreateQuestion() {
     option2: '',
     option3: '',
     option4: '',
-    correctAnswer: '1', // Default to option 1
+    correctAnswer: '1',
     difficulty: 'Medium',
   })
   const [error, setError] = useState('')
@@ -46,7 +46,7 @@ function CreateQuestion() {
       return
     }
 
-    // Get the actual correct answer text based on selected option
+
     const correctAnswerText = formData[`option${formData.correctAnswer}`]
 
     createQuestionMutation.mutate({

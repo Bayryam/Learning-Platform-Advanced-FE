@@ -16,19 +16,19 @@ function EditQuiz() {
   const [error, setError] = useState('')
   const { showToast } = useToast()
 
-  // Fetch quiz details
+
   const { data: quizData, isLoading: loadingQuiz } = useQuery({
     queryKey: ['quiz', quizId],
     queryFn: () => quizService.getQuizDetails(quizId),
   })
 
-  // Fetch available questions for this course
+
   const { data: questionsData, isLoading: loadingQuestions } = useQuery({
     queryKey: ['questions', courseId],
     queryFn: () => questionService.getQuestions(courseId),
   })
 
-  // Initialize form when quiz data loads
+
   useEffect(() => {
     if (quizData?.data) {
       setFormData({ title: quizData.data.title })
